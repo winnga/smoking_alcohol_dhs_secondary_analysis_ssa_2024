@@ -125,36 +125,10 @@ res <- rma(forest_meta_men$yi, forest_meta_men$vi, data=forest_meta_men)
 # Create the forest plot
 forest(res, slab=forest_meta_men$Survey)
 
-# 
-# meta_men <- metaprop(event = forest_data$mentobaccoany, 
-#                      n = data$Men, 
-#                      studlab = forest_data$Country[forest_data$Gender == "Men"],
-#                      sm = "PLOGIT",
-#                      comb.fixed = FALSE, 
-#                      comb.random = TRUE)
+# Adjust plotting settings for large datasets
+forest(res, slab=forest_meta_men$Studyid, cex=0.6, xlim=c(-5, 5), ylim=c(-1, nrow(forest_meta_men)+3))
 
-forest(meta_men, 
-       xlab = "Proportion of Men Using Tobacco",
-       main = "Forest Plot of Tobacco Usage (Men)")
-
- 
-
-# Forest plot for women
-res_women <- rma(yi = log(forest_data$womentobaccoany), 
-                 sei = forest_data$se_womentobaccoany[forest_data$Gender == "Women"],
-                 data = forest_data[forest_data$Gender == "Women",])
-
-forest(res_women, 
-       xlab = "Proportion of Women Using Tobacco",
-       slab = forest_data$Country[forest_data$Gender == "Women"])
-
-# Forest plot for men
-res_men <- rma(yi = log(forest_data$mentobaccoany), 
-               sei = forest_data$se_mentobaccoany[forest_data$Gender == "Men"],
-               data = forest_data[forest_data$Gender == "Men",])
-
-forest(res_men, 
-       xlab = "Proportion of Men Using Tobacco",
-       slab = forest_data$Country[forest_data$Gender == "Men"])
-
-#
+# Add a title and axis labels
+title(main="Forest Plot of Women Tobacco Use by Study", line=1)
+mtext("Study ID", side=2, line=4)
+mtext("Effect Size (logit transformed proportion)", side=1, line=3)

@@ -93,16 +93,17 @@ forest_meta_women <- forest_data %>%
   
 
 # Forest plot for women
-meta_women <- metaprop(event = forest_meta_women$womentobaccoany, 
-                       n = forest_meta_women$Women, 
-                       studlab = forest_meta_women$Studyid,
-                       sm = "PLOGIT",
-                       comb.fixed = FALSE, 
-                       comb.random = TRUE)
+# Calculate the logit-transformed proportions and their variances
+forest_meta_women$yi <- escalc(measure="PLO", xi=forest_meta_women$womentobaccoany * forest_meta_women$Women, 
+                               ni=forest_meta_women$Women, data=forest_meta_women)$yi
+forest_meta_women$vi <- forest_meta_women$se_womentobaccoany^2
 
-forest(meta_women, 
-       xlab = "Proportion of Women Using Tobacco",
-       main = "Forest Plot of Tobacco Usage (Women)")
+# Fit the random-effects model
+res <- rma(forest_meta_women$yi, forest_meta_women$vi, data=forest_meta_women)
+
+# Create the forest plot
+forest(res, slab=forest_meta_women$Survey)
+
 
 # Forest plot for men
 meta_men <- metaprop(event = forest_data$mentobaccoany, 
@@ -116,7 +117,7 @@ forest(meta_men,
        xlab = "Proportion of Men Using Tobacco",
        main = "Forest Plot of Tobacco Usage (Men)")
 
-
+ 
 
 # Forest plot for women
 res_women <- rma(yi = log(forest_data$womentobaccoany), 
